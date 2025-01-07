@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>공공예절 정보</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            margin: 20px;
+        }
+        textarea {
+            width: 80%;
+            height: 100px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        img {
+            margin-top: 20px;
+            max-width: 100%;
+            height: auto;
+        }
+        .description {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>공공예절 정보</h1>
+        <p>공공장소를 입력하세요</p>
+        <textarea id="textInput" placeholder="이 자리에 공공장소를 입력하세요."></textarea><br>
+        <button onclick="showImage()">제출</button>
+        <div id="output">
+            <!-- 이미지와 설명이 생길 곳 -->
+        </div>
+    </div>
+
+    <script>
+        function showImage() {
+            const text = document.getElementById('textInput').value.trim();
+            const outputDiv = document.getElementById('output');
+
+            if (!text) {
+                outputDiv.innerHTML = '<p>오류: 공공장소를 입력하세요</p>';
+                return;
+            }
+
+            const descriptions = {
+                "도서관": "조용히 하기<br>음식물 반입 금지<br>대출한 책은 제자리에 두기<br>휴대전화 사용을 자제하기",
+                "지하철": "노약자석은 양보하기<br>큰 소리로 통화하지 않기<br>입구에서 길을 막지 않기<br>음식물 섭취 금지",
+                "버스정류장": "줄을 서서 대기하기<br>버스가 정차한 후 탑승하기<br>흡연 금지<br>다른 사람에게 불편을 주지 않기",
+                "식당": "줄을 서서 대기하기<br>큰 소리로 떠들지 않기<br>다 먹은 식기는 정리하기<br>음식물 낭비하지 않기",
+                "영화관": "상영 중 소음 금지<br>좌석 뒤를 차지 않기<br>음식물 포장지 소리 줄이기<br>휴대전화 화면 밝기 줄이기",
+                "병원": "조용히 하기<br>진료시간 준수하기<br>의료진의 지시에 따르기<br>다른 환자를 방해하지 않기",
+                "공원": "쓰레기는 지정된 곳에 버리기<br>애완동물은 목줄 착용하기<br>큰 소리로 음악 틀지 않기<br>자연을 훼손하지 않기",
+                "쇼핑몰": "점원의 안내를 따르기<br>상품은 함부로 만지지 않기<br>다른 고객에게 방해되지 않기<br>엘리베이터에서는 줄 서기",
+                "공항": "보안검사에 협조하기<br>줄을 서서 대기하기<br>큰 짐은 다른 사람에게 방해되지 않게 두기<br>탑승 시간에 맞춰 준비하기",
+                "학교": "교칙을 준수하기<br>수업 중에는 집중하기<br>친구들과 다투지 않기<br>공용 물건은 깨끗하게 사용하기",
+                "체육관": "운동 후 기구 정리하기<br>다른 사람을 배려하기<br>큰 소리로 소리치지 않기<br>개인 위생 관리 철저히 하기",
+                "해변": "쓰레기는 가져가기<br>큰 소리로 음악 틀지 않기<br>바닷물 오염시키지 않기<br>다른 사람의 자리를 침범하지 않기",
+                "기차역": "줄을 서서 대기하기<br>큰 소리로 떠들지 않기<br>열차 시간 준수하기<br>짐은 다른 사람에게 방해되지 않게 두기",
+                "놀이공원": "줄을 서서 차례대로 놀이기구 탑승하기<br>큰 소리로 떠들거나 뛰지 않기<br>음식물 쓰레기는 지정된 장소에 버리기<br>다른 방문객을 방해하지 않기",
+                "호텔": "객실 내에서 조용히 하기<br>객실 비품 훼손 금지<br>직원에게 예의 바르게 대하기<br>공용시설은 깨끗이 사용하기",
+                "종교시설": "의례 중에는 조용히 하기<br>모자를 벗고 예의를 갖추기<br>촬영 금지 구역에서 사진 찍지 않기<br>다른 사람의 신앙을 존중하기",
+                "미술관": "작품을 손으로 만지지 않기<br>작품 앞에서 큰 소리로 떠들지 않기<br>플래시를 사용하지 않고 사진 촬영하기<br>작품 설명을 방해하지 않기",
+                "캠핑장": "야생 동물과 환경을 해치지 않기<br>소음을 줄이고 조용히 대화하기<br>불 피운 자리는 완전히 정리하기<br>쓰레기는 모두 챙겨가기",
+                "수영장": "수영복 착용하기<br>다른 사람에게 물을 튀기지 않기<br>뛰거나 다이빙하지 않기<br>탈의실을 깨끗하게 사용하기",
+                "산책로": "자연을 훼손하지 않기<br>애완동물은 목줄을 사용하기<br>쓰레기는 가지고 돌아가기<br>다른 사람의 산책을 방해하지 않기",
+                "스키장": "리프트 줄서기 준수하기<br>스키나 보드를 안전하게 다루기<br>다른 사람과 충돌하지 않도록 주의하기<br>스키장 규칙을 따르기",
+                "카페": "큰 소리로 통화하지 않기<br>자리 정리 후 퇴장하기<br>장시간 자리를 차지하지 않기<br>직원에게 친절히 대하기",
+                "도심": "횡단보도에서 신호 준수하기<br>보행자를 방해하지 않기<br>공공자전거는 지정된 장소에 반납하기<br>거리에서 흡연 금지",
+                "운동장": "운동 기구는 순서대로 사용하기<br>경기 중 다른 사람을 방해하지 않기<br>쓰레기는 가지고 돌아가기<br>다른 이용객과 조화를 이루기",
+                "사무실": "공동 공간은 깨끗하게 사용하기<br>큰 소리로 이야기하지 않기<br>다른 사람의 책상이나 물건을 함부로 만지지 않기<br>정해진 자리에서 식사하기",
+                "독서실": "절대 정숙 유지하기<br>책상에 불필요한 물건을 올려놓지 않기<br>자리 맡아두기 금지<br>음식물 섭취 금지",
+                "공연장": "공연 중 휴대전화 끄기<br>공연 중 자리 이동 금지<br>큰 소리로 소음 내지 않기<br>공연 전후에 쓰레기를 정리하기",
+                "서점": "책은 정해진 장소에서 읽기<br>읽던 책은 제자리에 두기<br>서점 내 음식물 반입 금지<br>다른 손님에게 방해되지 않기",
+                "버스": "승하차 시 줄을 서서 기다리기<br>운전 중에는 운전자와 대화하지 않기<br>노약자석은 필요한 사람에게 양보하기<br>차량 내에서 음식물 섭취하지 않기",
+                "택시": "줄을 서서 차례대로 탑승하기<br>운전 중에는 큰 소리로 떠들지 않기<br>하차 시 요금을 정확히 계산하기<br>차량 내부를 깨끗하게 유지하기"
+            };
+
+            const imagePath = `images/${text}.jpg`; // 이미지 파일 경로
+
+            // 이미지가 존재하는지 확인하기 위해 로드 시도
+            const img = new Image();
+            img.src = imagePath;
+            img.onload = function() {
+                const description = descriptions[text] || "해당 공공장소에 대한 설명이 준비되지 않았습니다.";
+                outputDiv.innerHTML = `
+                    <img src="${imagePath}" alt="${text} Image">
+                    <p class="description">${description}</p>
+                `;
+            };
+            img.onerror = function() {
+                outputDiv.innerHTML = '<p>해당 공공장소에 대한 설명이 준비되지 않았습니다.</p>';
+            };
+        }
+
+        // Enter 키 이벤트 추가
+        document.getElementById('textInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // 새 줄 생성 방지
+                showImage();
+            }
+        });
+    </script>
+</body>
+</html>
